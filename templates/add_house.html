@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <title>Add House</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 mt-5 shadow p-3 mb-5 bg-white rounded">
+                <h3>House Creation</h3>
+                <form class="form mt-3" method="post" action="/houses/add" enctype="multipart/form-data">
+                    <dl>
+                        <p>
+                            <input class="form-control" name="inputLocation" value="" type="text" placeholder="Location"
+                                autocomplete="off" required>
+                        </p>
+                        <p>
+                            <textarea class="form-control" name="inputDesc" value="" type="text"
+                                placeholder="Description" autocomplete="off" required></textarea>
+                        </p>
+
+                        <p>
+                            <input class="form-control" name="inputPrice" value="" type="text" placeholder="Price"
+                                autocomplete="off" required>
+                        </p>
+
+                        <p>
+                            <input class="form-control" name="inputCont" value="" type="text" placeholder="Contacts"
+                                autocomplete="off" required>
+                        </p>
+                        <div class="input-group mb-3">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="inputGroupFile02">
+                                <label class="custom-file-label" for="inputGroupFile02"
+                                    aria-describedby="inputGroupFileAddon02">Choose file</label>
+                            </div>
+                        </div>
+
+                    </dl>
+                    <p>
+                        <input type="submit" class="btn btn-success" value="Add House">
+                    </p>
+                </form>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+
+
+    </div>
+
+</body>
+
+</html>

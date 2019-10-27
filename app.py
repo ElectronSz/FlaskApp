@@ -11,13 +11,31 @@ client = MongoClient('mongodb://localhost:27017/')
 db = client.Api
 users = db['user']
 
+##***************=>Default Route**********************##
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-@app.route("/new_user")
+##***************=>Users Route**********************##
+@app.route("/users")
+def users():
+    try:
+        user_arr = list()
+        user_out = db['user']
+        user_list = user_out.find()
+        for user in user_list:
+            user_arr.append(user)
+        return render_template("users.html", table=user_arr)
+    except Exception as e:
+        print(e)
+
+
+@app.route("/users/new")
 def add_user_view():
     return render_template("add.html")
 
 
-@app.route("/add", methods=["POST"])
+@app.route("/users/add", methods=["POST"])
 def add_user():
     try:
         _name = request.form["inputName"]
@@ -36,34 +54,22 @@ def add_user():
             }
 
             user_in.insert_one(user)
-            return redirect("/")
+            return redirect("/users")
         else:
             return "Error while adding user"
     except Exception as e:
         print(e)
 
 
-@app.route("/")
-def users():
-    try:
-        user_arr = list()
-        user_out = db['user']
-        user_list = user_out.find()
-        for user in user_list:
-            user_arr.append(user)
-        return render_template("users.html", table=user_arr)
-    except Exception as e:
-        print(e)
 
-
-@app.route("/edit/<id>")
+@app.route("/users/edit/<id>")
 def edit_view(id):
        user_out = db['user']
        row = user_out.find_one({"_id": ObjectId(id)})
        return render_template("edit.html", row=row)
 
 
-@app.route("/update", methods=["POST"])
+@app.route("/users/update", methods=["POST"])
 def update_user():
     try:
         _name = request.form["inputName"]
@@ -75,16 +81,28 @@ def update_user():
             #implement update
             user_out = db['user']
             user_out.update_one({'_id': ObjectId(_id)}, { "$set": { 'name': _name, 'email': _email } })
-            return redirect("/")
+            return redirect("/users")
         else:
             return "Error while updating user"
     except Exception as e:
         print(e)
 
 
-@app.route("/delete/<_id>")
+@app.route("/users/delete/<_id>")
 def delete_user(_id):
     #implement delete
     user_out = db['user']
     user_out.delete_one({"_id": ObjectId(_id)})
-    return redirect('/')
+    return redirect('/users')
+
+##***************<=Users Route**********************##
+
+
+##***************=>Houses Route**********************##
+@app.route('/houses')
+def houses():
+    return render_template('houses.html')
+
+@app.route("/houses/new")
+def add_house_view():
+    return render_template("add_house.html")
