@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect
 from werkzeug import generate_password_hash, check_password_hash
 from pymongo import MongoClient
 import datetime
+from bson import ObjectId
 
 app = Flask(__name__)
 
@@ -55,13 +56,11 @@ def users():
         print(e)
 
 
-@app.route("/edit/<int:id>")
+@app.route("/edit/<id>")
 def edit_view(id):
-    try:
-       
-       return render_template("edit.html")
-    except Exception as e:
-        print(e)
+       user_out = db['user']
+       row = user_out.find_one({"_id": ObjectId(id)})
+       return render_template("edit.html", row=row)
 
 
 @app.route("/update", methods=["POST"])
@@ -69,14 +68,12 @@ def update_user():
     try:
         _name = request.form["inputName"]
         _email = request.form["inputEmail"]
-        _password = request.form["inputPassword"]
         _id = request.form["id"]
         # validate the received values
-        if _name and _email and _password and _id and request.method == "POST":
-            # do not save password as a plain text
-            _hashed_password = generate_password_hash(_password)
-
+        if _name and _email and _id and request.method == "POST":
+         
            #implement update
+           user_out = db['user']
 
             return redirect("/")
         else:

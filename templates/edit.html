@@ -1,20 +1,35 @@
-<doctype html>
-<title>Edit User - Python Flask MySQL CRUD</title>
-<h2>Edit User</h2>
-<form method="post" action="/update">
-    <dl>
-		<p>
-			<input name="inputName" value="{{ row['user_name'] }}" type="text" placeholder="Name" autocomplete="off" required>
-		</p>
-		<p>
-			<input name="inputEmail" value="{{ row['user_email'] }}" type="text" placeholder="Email" autocomplete="off" required>
-		</p>
-		<p>
-			<input name="inputPassword" value="" type="password" placeholder="Password" autocomplete="off" required>
-		</p>
-    </dl>
-    <p>
-		<input name="id" value="{{ row['user_id'] }}" type="hidden">
-		<input type="submit" value="Submit">
-	</p>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<title>Update User</title>
+</head>
+<body>
+<div class="container">
+	<div class="row">
+		<div class="col-md-6 mt-5">
+				<h3>Edit User</h3>
+				<form class="form mt-4" method="post" action="/update">
+					<dl>
+						<p>
+							<input class="form-control" name="inputName" value="{{ row.name }}" type="text" placeholder="Name" autocomplete="off" required>
+						</p>
+						<p>
+							<input class="form-control" name="inputEmail" value="{{ row.email }}" type="text" placeholder="Email" autocomplete="off" required>
+						</p>
+						
+					</dl>
+					<p>
+						<input name="id" value="{{ row._id }}" type="hidden">
+						<input class="btn btn-success" type="submit" value="Update">
+					</p>
+				</form>
+		</div>
+		<div class="col-md-6"></div>
+	</div>
+</div>
+</body>
+</html>
