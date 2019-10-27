@@ -7,7 +7,7 @@ from bson import ObjectId
 
 app = Flask(__name__)
 
-client = MongoClient('mongodb://localhost:27017/')
+client = MongoClient('mongodb+srv://mongodb:mongo1828@cluster0-iogp2.gcp.mongodb.net/house?retryWrites=true&w=majority')
 db = client.Api
 users = db['user']
 
