@@ -33,7 +33,7 @@
 						<td>{{ user.email }}</td>
 						<td>{{ user.date_reg }}</td>
 						<td><a href={{ url_for('.edit_view', id=user._id) }}><i class="material-icons">create</i></a> 
-							<a href="#"><i class="material-icons">delete_forever</i></a></td>
+							<a href={{ url_for('.delete_user', _id=user._id) }}><i class="material-icons">delete_forever</i></a></td>
 					</tr>
 					{% endfor %}
 

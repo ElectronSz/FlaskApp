@@ -72,9 +72,9 @@ def update_user():
         # validate the received values
         if _name and _email and _id and request.method == "POST":
          
-           #implement update
-           user_out = db['user']
-
+            #implement update
+            user_out = db['user']
+            user_out.update_one({'_id': ObjectId(_id)}, { "$set": { 'name': _name, 'email': _email } })
             return redirect("/")
         else:
             return "Error while updating user"
@@ -82,11 +82,9 @@ def update_user():
         print(e)
 
 
-@app.route("/delete/<int:id>")
-def delete_user(id):
-    try:
-        #implement delete
-
-        return redirect("/")
-    except Exception as e:
-        print(e)
+@app.route("/delete/<_id>")
+def delete_user(_id):
+    #implement delete
+    user_out = db['user']
+    user_out.delete_one({"_id": ObjectId(_id)})
+    return redirect('/')
