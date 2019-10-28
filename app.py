@@ -106,3 +106,11 @@ def houses():
 @app.route("/houses/new")
 def add_house_view():
     return render_template("add_house.html")
+
+
+@app.route("/charts")
+def charts():
+    legend = 'Monthly Data'
+    labels = ["January", "February", "March", "April", "May", "June", "July", "August"]
+    values = [10, 9, 8, 7, 6, 4, 7, 8]
+    return render_template('charts.html', values=values, labels=labels, legend=legend)
