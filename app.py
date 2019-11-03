@@ -2,12 +2,15 @@
 from flask import Flask, render_template, request, redirect
 from werkzeug import generate_password_hash, check_password_hash
 from pymongo import MongoClient
-import datetime
+from datetime import datetime
+import os
 from bson import ObjectId
 from rethinkdb import RethinkDB
 r = RethinkDB()
 
 app = Flask(__name__)
+UPLOAD_FOLDER =os.getcwd()+"/uploads"
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 client = MongoClient('mongodb+srv://mongodb:mongo1828@cluster0-iogp2.gcp.mongodb.net/house?retryWrites=true&w=majority')
 db = client.Api
@@ -141,20 +144,33 @@ def rethink_user():
         _name = request.form["fullname"]
         _email = request.form["email"]
         _phone = request.form["phone"]
+        _avatar = request.files["avatar"]
         # validate the received values
         if _name and _email and _phone and request.method == "POST":
-           
+            
+            _avatar.save(os.path.join(app.config['UPLOAD_FOLDER'], _avatar.filename))
+
+            avatar_path = os.path.join(app.config['UPLOAD_FOLDER'])+"/"+_avatar.filename
+            fh = open(avatar_path, 'rb')
+            contents = fh.read()
+            fh.close()
+
             user = {
                 'name': _name,
                 'email': _email,
-                'phone': _phone
+                'phone': _phone,
+                'avatar_bn': r.binary(contents),
+                'avatar_img': _avatar.filename,
+                'timestamp': r.expr(datetime.now(r.make_timezone('+02:00')))
             }
 
+           
             r.db('Api').table("users").insert(
                 [
                     user
                 ]
             ).run(conn)
+
             return redirect("/rethink")
         else:
             return "Error while adding user"
@@ -185,6 +201,8 @@ def rethink_update_user():
             return "Error while updating user"
     except Exception as e:
         print(e)
+
+
 
 @app.route("/rethink/delete/<id>")
 def rethink_delete_user(id):
