@@ -2,12 +2,15 @@
 from flask import Flask, render_template, request, redirect
 from werkzeug import generate_password_hash, check_password_hash
 from pymongo import MongoClient
-import datetime
+from datetime import datetime
+import os
 from bson import ObjectId
 from rethinkdb import RethinkDB
 r = RethinkDB()
 
 app = Flask(__name__)
+UPLOAD_FOLDER =os.getcwd()+"/uploads"
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 client = MongoClient('mongodb+srv://mongodb:mongo1828@cluster0-iogp2.gcp.mongodb.net/house?retryWrites=true&w=majority')
 db = client.Api
@@ -122,9 +125,87 @@ def charts():
 
 @app.route("/rethink")
 def rethink():
-    cursor = r.db('Api').table("posts").changes().run(conn)
-    posts = []
-    for post in cursor:
-        posts.append(post)
+    cursor = r.db('Api').table("users").run(conn)
+    users = []
+    for user in cursor:
+        users.append(user)
     
-    return render_template('rethink.html', posts=posts)
+    return render_template('rethink.html',users=users)
+
+@app.route("/rethink/new")
+def add_rethink_view():
+    return render_template("user_add.html")
+
+
+
+@app.route("/rethink/add", methods=["POST"])
+def rethink_user():
+    try:
+        _name = request.form["fullname"]
+        _email = request.form["email"]
+        _phone = request.form["phone"]
+        _avatar = request.files["avatar"]
+        # validate the received values
+        if _name and _email and _phone and request.method == "POST":
+            
+            _avatar.save(os.path.join(app.config['UPLOAD_FOLDER'], _avatar.filename))
+
+            avatar_path = os.path.join(app.config['UPLOAD_FOLDER'])+"/"+_avatar.filename
+            fh = open(avatar_path, 'rb')
+            contents = fh.read()
+            fh.close()
+
+            user = {
+                'name': _name,
+                'email': _email,
+                'phone': _phone,
+                'avatar_bn': r.binary(contents),
+                'avatar_img': _avatar.filename,
+                'timestamp': r.expr(datetime.now(r.make_timezone('+02:00')))
+            }
+
+           
+            r.db('Api').table("users").insert(
+                [
+                    user
+                ]
+            ).run(conn)
+
+            return redirect("/rethink")
+        else:
+            return "Error while adding user"
+    except Exception as e:
+        print(e)
+
+
+@app.route("/rethink/edit/<id>")
+def rethink_edit_view(id):
+    row = r.db('Api').table('users').get(id).run(conn)
+    return render_template("rethink_edit.html", row=row)
+
+
+@app.route("/rethink/update", methods=["POST"])
+def rethink_update_user():
+    try:
+        _name = request.form["name"]
+        _email = request.form["email"]
+        _phone = request.form["phone"]
+        _id = request.form["id"]
+        # validate the received values
+        if _name and _email and _id and _phone and request.method == "POST":
+         
+            #update
+            r.db('Api').table("users").filter(r.row['id'] == _id).update({"name": _name, "email": _email, "phone": _phone}).run(conn)
+            return redirect("/rethink")
+        else:
+            return "Error while updating user"
+    except Exception as e:
+        print(e)
+
+
+
+@app.route("/rethink/delete/<id>")
+def rethink_delete_user(id):
+    #implement delete
+    r.db('Api').table("users").filter(r.row['id'] == id).delete().run(conn)
+    return redirect('/rethink')

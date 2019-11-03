@@ -1,0 +1,35 @@
+{% include 'header.html' %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-6 mt-5">
+			<h3>User Registration</h3>
+			<form class="form mt-3" method="post" action="/rethink/add" enctype="multipart/form-data">
+				<dl>
+					<p>
+						<input class="form-control" name="fullname" value="" type="text" placeholder="Full Name"
+							autocomplete="off" required>
+					</p>
+					<p>
+						<input class="form-control" name="email" value="" type="text" placeholder="Email"
+							autocomplete="off" required>
+					</p>
+					<p>
+						<input class="form-control" name="phone" value="" type="text" placeholder="Phone Number"
+							autocomplete="off" required>
+                    </p>
+                    <p>
+						<input class="form-control" name="avatar" value="" type="file" placeholder="Avatar" required>
+					</p>
+				</dl>
+				<p>
+					<input type="submit" class="btn btn-success" value="Add User">
+				</p>
+			</form>
+		</div>
+		<div class="col-md-6"></div>
+	</div>
+
+
+</div>
+
+{% include 'footer.html' %}
