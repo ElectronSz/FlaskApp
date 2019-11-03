@@ -122,9 +122,72 @@ def charts():
 
 @app.route("/rethink")
 def rethink():
-    cursor = r.db('Api').table("posts").changes().run(conn)
-    posts = []
-    for post in cursor:
-        posts.append(post)
+    cursor = r.db('Api').table("users").run(conn)
+    users = []
+    for user in cursor:
+        users.append(user)
     
-    return render_template('rethink.html', posts=posts)
+    return render_template('rethink.html',users=users)
+
+@app.route("/rethink/new")
+def add_rethink_view():
+    return render_template("user_add.html")
+
+
+
+@app.route("/rethink/add", methods=["POST"])
+def rethink_user():
+    try:
+        _name = request.form["fullname"]
+        _email = request.form["email"]
+        _phone = request.form["phone"]
+        # validate the received values
+        if _name and _email and _phone and request.method == "POST":
+           
+            user = {
+                'name': _name,
+                'email': _email,
+                'phone': _phone
+            }
+
+            r.db('Api').table("users").insert(
+                [
+                    user
+                ]
+            ).run(conn)
+            return redirect("/rethink")
+        else:
+            return "Error while adding user"
+    except Exception as e:
+        print(e)
+
+
+@app.route("/rethink/edit/<id>")
+def rethink_edit_view(id):
+    row = r.db('Api').table('users').get(id).run(conn)
+    return render_template("rethink_edit.html", row=row)
+
+
+@app.route("/rethink/update", methods=["POST"])
+def rethink_update_user():
+    try:
+        _name = request.form["name"]
+        _email = request.form["email"]
+        _phone = request.form["phone"]
+        _id = request.form["id"]
+        # validate the received values
+        if _name and _email and _id and _phone and request.method == "POST":
+         
+            #update
+            r.db('Api').table("users").filter(r.row['id'] == _id).update({"name": _name, "email": _email, "phone": _phone}).run(conn)
+            return redirect("/rethink")
+        else:
+            return "Error while updating user"
+    except Exception as e:
+        print(e)
+
+@app.route("/rethink/delete/<id>")
+def rethink_delete_user(id):
+    #implement delete
+    r.db('Api').table("users").filter(r.row['id'] == id).delete().run(conn)
+    return redirect('/rethink')

@@ -1,0 +1,30 @@
+{% include 'header.html' %}
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-6 mt-5">
+				<h3>Edit User</h3>
+				<form class="form mt-4" method="post" action="/rethink/update">
+					<dl>
+						<p>
+							<input class="form-control" name="name" value="{{ row.name }}" type="text" placeholder="Name" autocomplete="off" required>
+						</p>
+						<p>
+							<input class="form-control" name="email" value="{{ row.email }}" type="text" placeholder="Email" autocomplete="off" required>
+                        </p>
+                        <p>
+							<input class="form-control" name="phone" value="{{ row.phone }}" type="text" placeholder="Email" autocomplete="off" required>
+						</p>
+						
+					</dl>
+					<p>
+						<input name="id" value="{{ row.id }}" type="hidden">
+						<input class="btn btn-success" type="submit" value="Update">
+					</p>
+				</form>
+		</div>
+		<div class="col-md-6"></div>
+	</div>
+</div>
+
+{% include 'footer.html' %}
