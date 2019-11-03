@@ -4,12 +4,17 @@ from werkzeug import generate_password_hash, check_password_hash
 from pymongo import MongoClient
 import datetime
 from bson import ObjectId
+from rethinkdb import RethinkDB
+r = RethinkDB()
 
 app = Flask(__name__)
 
 client = MongoClient('mongodb+srv://mongodb:mongo1828@cluster0-iogp2.gcp.mongodb.net/house?retryWrites=true&w=majority')
 db = client.Api
 users = db['user']
+
+#rethinkd config
+conn = r.connect('localhost', 28015).repl()
 
 ##***************=>Default Route**********************##
 @app.route('/')
@@ -114,3 +119,12 @@ def charts():
     labels = ["January", "February", "March", "April", "May", "June", "July", "August"]
     values = [10, 9, 8, 7, 6, 4, 7, 8]
     return render_template('charts.html', values=values, labels=labels, legend=legend)
+
+@app.route("/rethink")
+def rethink():
+    cursor = r.db('Api').table("posts").changes().run(conn)
+    posts = []
+    for post in cursor:
+        posts.append(post)
+    
+    return render_template('rethink.html', posts=posts)
