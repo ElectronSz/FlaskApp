@@ -209,3 +209,8 @@ def rethink_delete_user(id):
     #implement delete
     r.db('Api').table("users").filter(r.row['id'] == id).delete().run(conn)
     return redirect('/rethink')
+
+
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0')
